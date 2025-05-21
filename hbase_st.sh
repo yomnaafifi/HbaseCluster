@@ -2,9 +2,11 @@
 
 
 if [[ "${HOSTNAME}" == *"hbasem"* ]]; then
-    "$HBASE_HOME/bin/hbase-daemon.sh" start master
+    hbase-daemon.sh start master
 elif [[ "${HOSTNAME}" == *"regionserver"* ]]; then
-    "$HBASE_HOME/bin/hbase-daemon.sh" start regionserver
+    hadoop-daemon.sh start datanode
+    yarn-daemon.sh start nodemanager
+    hbase-daemon.sh start regionserver
 else
     :
 fi

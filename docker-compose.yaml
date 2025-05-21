@@ -59,19 +59,6 @@ services:
       - namenode3:/usr/local/hadoop/hdfs/namenode
       - journalnode3:/usr/local/hadoop/hdfs/journals
       - zookeeper3:/usr/local/zookeeper/data
-  worker: 
-    build: 
-      context: .
-      target: hadoop
-    hostname: worker
-    container_name: worker
-    depends_on:
-      master1: 
-        condition: service_healthy
-    networks:
-      - hd_net
-    volumes:
-      - datanode1:/usr/local/hadoop/hdfs/datanode
 
   hmaster1:
     build: 
@@ -144,7 +131,24 @@ services:
       - "16031:16030"
     networks:
       - hd_net
-    
+
+  regionserver3:
+    build:
+      context: .
+      target: hbase
+    hostname: regionserver3
+    container_name: regionserver3
+    depends_on:
+      master1: 
+        condition: service_healthy
+      master2: 
+        condition: service_healthy
+      master3:
+        condition: service_healthy 
+    ports:
+      - "16032:16030"
+    networks:
+      - hd_net    
 volumes:
   namenode1:
   namenode2:
