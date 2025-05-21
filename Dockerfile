@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM ubuntu:22.04 AS hadoop 
 
 RUN apt update -y && apt upgrade -y && \
     apt install -y openjdk-8-jdk ssh sudo nano
@@ -70,4 +70,20 @@ RUN sudo chmod +x /home/hduser/stscript.sh
 
 
 ENTRYPOINT [ "./stscript.sh" ]
+
+FROM hadoop AS hbase
+
+ADD https://dlcdn.apache.org/hbase/stable/hbase-2.5.11-bin.tar.gz /usr/local
+RUN sudo tar -xzf /usr/local/hbase-2.5.11-bin.tar.gz -C /usr/local && \
+    sudo mv /usr/local/hbase-2.5.11 /usr/local/hbase && \
+    sudo chown -R hduser:hadoop /usr/local/hbase && \
+    sudo chmod -R 755 /usr/local/hbase && \
+    sudo rm /usr/local/hbase-2.5.11-bin.tar.gz
+
+COPY hbase_config/* /usr/local/hbase/conf/
+
+ENV HBASE_HOME=/usr/local/hbase
+
+RUN echo 'export JAVA_HOME=/usr/lib/jvm/java' >> $HBASE_HOME/conf/hbase-env.sh && \
+    echo 'export HBASE_MANAGES_ZK=false' >> $HBASE_HOME/conf/hbase-env.sh
 

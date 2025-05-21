@@ -2,6 +2,7 @@ services:
   master1:
     build: 
       context: .
+      target: hadoop
     hostname: master1
     container_name: master1
     ports:
@@ -21,6 +22,8 @@ services:
   master2:
     build: 
       context: .
+      target: hadoop
+
     hostname: master2
     container_name: master2
     ports:
@@ -35,6 +38,7 @@ services:
   master3:
     build: 
       context: .
+      target: hadoop
     hostname: master3
     container_name: master3 
     ports:
@@ -49,6 +53,7 @@ services:
   worker: 
     build: 
       context: .
+      target: hadoop
     hostname: worker
     container_name: worker
     depends_on:
@@ -59,7 +64,50 @@ services:
     volumes:
       - datanode1:/usr/local/hadoop/hdfs/datanode
 
+  hmaster1:
+    build: 
+      context: .
+      target: hbase
+    hostname: hmaster1
+    container_name: hmaster1
+    ports:
+      - "16010:16010"
+    networks:
+      - hd_net
 
+  hmaster2:
+    build: 
+      context: .
+      target: hbase
+    hostname: hmaster2
+    container_name: hmaster2
+    ports:
+      - "16011:16010"
+    networks:
+      - hd_net
+
+  regionserver1:
+    build:
+      context: .
+      target: hbase
+    hostname: regionserver1
+    container_name: regionserver1
+    ports:
+      - "16030:16030"
+    networks:
+      - hd_net
+
+  regionserver2:
+    build:
+      context: .
+      target: hbase
+    hostname: regionserver2
+    container_name: regionserver2
+    ports:
+      - "16031:16030"
+    networks:
+      - hd_net
+    
 volumes:
   namenode1:
   namenode2:
