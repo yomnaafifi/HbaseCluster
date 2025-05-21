@@ -22,5 +22,11 @@
     </property>
 
 
+    <property>
+        <name>hbase.wal.provider</name>
+        <value>filesystem</value>
+    </property>
+
+
 
 </configuration>
