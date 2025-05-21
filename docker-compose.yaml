@@ -1,0 +1,78 @@
+services:
+  master1:
+    build: 
+      context: .
+    hostname: master1
+    container_name: master1
+    ports:
+      - "9180:8088"
+      - "9885:9870"
+    networks:
+      - hd_net
+    healthcheck:
+      test: ["CMD", "hdfs", "haadmin", "-checkHealth", "nn1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - namenode1:/usr/local/hadoop/hdfs/namenode
+      - journalnode1:/usr/local/hadoop/hdfs/journals
+      - zookeeper1:/usr/local/zookeeper/data
+  master2:
+    build: 
+      context: .
+    hostname: master2
+    container_name: master2
+    ports:
+      - "9280:8088"
+      - "9886:9870"
+    networks:
+      - hd_net
+    volumes:
+      - namenode2:/usr/local/hadoop/hdfs/namenode
+      - journalnode2:/usr/local/hadoop/hdfs/journals
+      - zookeeper2:/usr/local/zookeeper/data
+  master3:
+    build: 
+      context: .
+    hostname: master3
+    container_name: master3 
+    ports:
+      - "9380:8088"
+      - "9887:9870"
+    networks:
+      - hd_net
+    volumes:
+      - namenode3:/usr/local/hadoop/hdfs/namenode
+      - journalnode3:/usr/local/hadoop/hdfs/journals
+      - zookeeper3:/usr/local/zookeeper/data
+  worker: 
+    build: 
+      context: .
+    hostname: worker
+    container_name: worker
+    depends_on:
+      master1: 
+        condition: service_healthy
+    networks:
+      - hd_net
+    volumes:
+      - datanode1:/usr/local/hadoop/hdfs/datanode
+
+
+volumes:
+  namenode1:
+  namenode2:
+  namenode3:
+  journalnode1:
+  journalnode2:
+  journalnode3:
+  datanode1:
+  zookeeper1:
+  zookeeper2:
+  zookeeper3:
+    
+networks:
+  hd_net:
+
+
