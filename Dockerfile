@@ -81,9 +81,14 @@ RUN sudo tar -xzf /usr/local/hbase-2.5.11-bin.tar.gz -C /usr/local && \
     sudo rm /usr/local/hbase-2.5.11-bin.tar.gz
 
 COPY hbase_config/* /usr/local/hbase/conf/
+COPY hbase_st.sh /home/hduser/
 
 ENV HBASE_HOME=/usr/local/hbase
+ENV PATH=$PATH:$HBASE_HOME/bin
 
 RUN echo 'export JAVA_HOME=/usr/lib/jvm/java' >> $HBASE_HOME/conf/hbase-env.sh && \
     echo 'export HBASE_MANAGES_ZK=false' >> $HBASE_HOME/conf/hbase-env.sh
 
+RUN sudo chmod +x /home/hduser/hbase_st.sh
+
+ENTRYPOINT [ "./hbase_st.sh" ]

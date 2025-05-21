@@ -11,7 +11,7 @@ services:
     networks:
       - hd_net
     healthcheck:
-      test: ["CMD", "hdfs", "haadmin", "-checkHealth", "nn1"]
+      test: ["CMD-SHELL", "hdfs haadmin -checkHealth nn1 && jps | grep -q QuorumPeerMain"]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -23,7 +23,6 @@ services:
     build: 
       context: .
       target: hadoop
-
     hostname: master2
     container_name: master2
     ports:
@@ -31,6 +30,11 @@ services:
       - "9886:9870"
     networks:
       - hd_net
+    healthcheck:
+      test: ["CMD-SHELL", "jps | grep -q QuorumPeerMain"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
     volumes:
       - namenode2:/usr/local/hadoop/hdfs/namenode
       - journalnode2:/usr/local/hadoop/hdfs/journals
@@ -46,6 +50,11 @@ services:
       - "9887:9870"
     networks:
       - hd_net
+    healthcheck:
+      test: ["CMD-SHELL", "jps | grep -q QuorumPeerMain"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
     volumes:
       - namenode3:/usr/local/hadoop/hdfs/namenode
       - journalnode3:/usr/local/hadoop/hdfs/journals
@@ -68,19 +77,33 @@ services:
     build: 
       context: .
       target: hbase
-    hostname: hmaster1
+    hostname: hbasem1
     container_name: hmaster1
+    depends_on:
+      master1: 
+        condition: service_healthy
+      master2: 
+        condition: service_healthy
+      master3:
+        condition: service_healthy 
     ports:
       - "16010:16010"
     networks:
       - hd_net
-
+   
   hmaster2:
     build: 
       context: .
       target: hbase
-    hostname: hmaster2
+    hostname: hbasem2
     container_name: hmaster2
+    depends_on:
+      master1: 
+        condition: service_healthy
+      master2: 
+        condition: service_healthy
+      master3:
+        condition: service_healthy 
     ports:
       - "16011:16010"
     networks:
@@ -92,6 +115,13 @@ services:
       target: hbase
     hostname: regionserver1
     container_name: regionserver1
+    depends_on:
+      master1: 
+        condition: service_healthy
+      master2: 
+        condition: service_healthy
+      master3:
+        condition: service_healthy 
     ports:
       - "16030:16030"
     networks:
@@ -103,6 +133,13 @@ services:
       target: hbase
     hostname: regionserver2
     container_name: regionserver2
+    depends_on:
+      master1: 
+        condition: service_healthy
+      master2: 
+        condition: service_healthy
+      master3:
+        condition: service_healthy 
     ports:
       - "16031:16030"
     networks:

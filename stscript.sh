@@ -20,7 +20,7 @@ if [[ "${HOSTNAME}" == *"master"* ]]; then
             hdfs --daemon start namenode
             
         else
-            sleep 120
+            sleep 90
             hdfs namenode -bootstrapStandby -force
             hdfs --daemon start namenode
         fi
