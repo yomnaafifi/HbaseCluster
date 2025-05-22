@@ -73,6 +73,9 @@ ENTRYPOINT [ "./stscript.sh" ]
 
 FROM hadoop AS hbase
 
+RUN sudo apt-get update && sudo apt-get install -y python3 python3-pip
+RUN sudo pip3 install faker happybase thrift
+
 ADD https://dlcdn.apache.org/hbase/stable/hbase-2.5.11-bin.tar.gz /usr/local
 RUN sudo tar -xzf /usr/local/hbase-2.5.11-bin.tar.gz -C /usr/local && \
     sudo mv /usr/local/hbase-2.5.11 /usr/local/hbase && \

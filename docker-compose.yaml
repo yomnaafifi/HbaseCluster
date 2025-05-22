@@ -77,6 +77,8 @@ services:
       - "16010:16010"
     networks:
       - hd_net
+    volumes:
+      - ./shared-data:/home/hduser/shared-data
    
   hmaster2:
     build: 
@@ -95,6 +97,8 @@ services:
       - "16011:16010"
     networks:
       - hd_net
+    volumes:
+      - ./shared-data:/home/hduser/shared-data
 
   regionserver1:
     build:
@@ -113,6 +117,8 @@ services:
       - "16030:16030"
     networks:
       - hd_net
+    volumes:
+      - datanode1:/usr/local/hadoop/hdfs/datanode
 
   regionserver2:
     build:
@@ -131,6 +137,8 @@ services:
       - "16031:16030"
     networks:
       - hd_net
+    volumes:
+      - datanode2:/usr/local/hadoop/hdfs/datanode
 
   regionserver3:
     build:
@@ -148,7 +156,10 @@ services:
     ports:
       - "16032:16030"
     networks:
-      - hd_net    
+      - hd_net  
+    volumes:
+      - datanode3:/usr/local/hadoop/hdfs/datanode  
+
 volumes:
   namenode1:
   namenode2:
@@ -157,6 +168,8 @@ volumes:
   journalnode2:
   journalnode3:
   datanode1:
+  datanode2:
+  datanode3:
   zookeeper1:
   zookeeper2:
   zookeeper3:
